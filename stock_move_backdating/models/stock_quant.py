@@ -3,9 +3,18 @@
 
 from odoo import models
 
+from ..utils import check_date
+
 
 class StockQuant(models.Model):
     _inherit = "stock.quant"
+    
+    date_backdating = fields.Datetime(string="Actual Inventory Date")
+    
+    @api.onchange('date_backdating')
+    def _onchange_date_backdating(self):
+        self.ensure_one()
+        check_date(self.date_backdating)    
 
     def _update_available_quantity(
         self,
@@ -32,3 +41,38 @@ class StockQuant(models.Model):
             owner_id=owner_id,
             in_date=in_date,
         )
+    
+    def _apply_inventory(self):
+        no_backdate_inventories = self.env["stock.quant"].browse()
+        for inventory in self:
+            date_backdating = inventory.date_backdating
+            if date_backdating:
+                inventory_ctx = inventory.with_context(
+                    date_backdating=date_backdating,
+                    force_period_date=fields.Date.context_today(self, date_backdating),
+                )
+                super(StockQuant, inventory_ctx)._apply_inventory()
+                inventory.date_backdating = False
+            else:
+                no_backdate_inventories |= inventory
+        return super(StockQuant, no_backdate_inventories)._apply_inventory()
+
+    @api.model
+    def _get_inventory_fields_write(self):
+        """Returns a list of fields user can edit when editing a quant in `inventory_mode`."""
+        res = super()._get_inventory_fields_write()
+        res += ["date_backdating"]
+        return res
+
+    def _get_inventory_move_values(self, qty, location_id, location_dest_id, out=False):
+        res = super()._get_inventory_move_values(
+            qty, location_id, location_dest_id, out
+        )
+        date_backdating = self.date_backdating
+        if date_backdating:
+            move_line_ids = res.get("move_line_ids", list())
+            for move_line_values in move_line_ids:
+                # Extract the dictionary from (0, 0, <dict>)
+                move_line_values = move_line_values[2]
+                move_line_values["date_backdating"] = date_backdating
+        return res
