@@ -4,7 +4,7 @@
 
 from odoo import api, fields, models
 
-from .stock_move import check_date
+from ..utils import check_date
 
 class StockMoveLine(models.Model):
     _inherit = "stock.move.line"

@@ -20,9 +20,10 @@
     "data": [
         "security/ir.model.access.csv",
         "wizards/fill_date_backdating.xml",
-        "views/stock_inventory_views.xml",
+        "views/stock_quant_views.xml",
         "views/stock_picking.xml",
         "views/stock_move_line_views.xml",
+        "views/stock_scrap_views.xml",
     ],
     "installable": True,
 }
