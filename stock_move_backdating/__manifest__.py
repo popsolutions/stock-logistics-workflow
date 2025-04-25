@@ -3,19 +3,19 @@
 #    Author Marco Dieckhoff
 # Copyright 2018 Alex Comba - Agile Business Group
 # Copyright 2023 Simone Rubino - TAKOBI
+# Copyright 2025 Rafnix Guzman - Popsolutions
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
     "name": "Stock Move Backdating",
-    "version": "14.0.1.0.1",
+    "version": "16.0.0.0.1",
     "category": "Stock Logistics",
     "license": "AGPL-3",
-    "author": "Marco Dieckhoff, BREMSKERL, Agile Business Group, "
-    "Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/stock-logistics-workflow"
-    "/tree/12.0/stock_move_backdating",
+    "author": "Marco Dieckhoff, BREMSKERL, Agile Business Group, Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/stock-logistics-workflow",
     "depends": [
         "stock_account",
+        "stock",
     ],
     "data": [
         "security/ir.model.access.csv",
