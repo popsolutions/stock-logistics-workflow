@@ -33,7 +33,7 @@ class StockPicking(models.Model):
     def _backdating_update_picking_date(self):
         """Set date_done as the youngest date among the done moves."""
         self.ensure_one()
-        moves = self.move_lines
+        moves = self.move_line_ids
         done_moves = moves.filtered(lambda m: m.state == "done")
         dates = done_moves.mapped("date")
         if dates:
@@ -43,7 +43,7 @@ class StockPicking(models.Model):
     def _backdating_update_account_moves_date(self):
         """Set date on linked account.move same as date on stock.move."""
         self.ensure_one()
-        stock_moves = self.move_lines
+        stock_moves = self.move_line_ids
         stock_moves._backdating_account_moves()
         return True
 

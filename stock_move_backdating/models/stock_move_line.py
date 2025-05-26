@@ -19,3 +19,12 @@ class StockMoveLine(models.Model):
     def onchange_date_backdating(self):
         self.ensure_one()
         check_date(self.date_backdating)
+
+    def _backdating_account_moves(self):
+        """Set date on linked account.move same as date on stock.move."""
+        self.ensure_one()
+        if not self.date_backdating:
+            return
+        for move in self.move_id:
+            move._backdating_account_moves()
+        return True
